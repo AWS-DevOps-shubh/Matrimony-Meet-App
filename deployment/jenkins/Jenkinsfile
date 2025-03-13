@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                sh 'docker build -t matrimony-backend .'
+            }
+        }
+        stage('Push') {
+            steps {
+                sh 'docker tag matrimony-backend:latest myrepo/matrimony-backend:latest'
+                sh 'docker push myrepo/matrimony-backend:latest'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'kubectl apply -f deployment/kubernetes/deployment.yaml'
+                sh 'kubectl apply -f deployment/kubernetes/service.yaml'
+            }
+        }
+    }
+}
