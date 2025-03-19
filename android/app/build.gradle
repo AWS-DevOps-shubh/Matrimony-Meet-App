@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+    namespace "com.matrimonymeet" // Add this line
     compileSdk 34
 
     defaultConfig {
