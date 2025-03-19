@@ -1,19 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongo
+  name: php-backend
+  namespace: matrimony-app  # Add namespace here
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: mongo
+      app: php-backend
   template:
     metadata:
       labels:
-        app: mongo
+        app: php-backend
     spec:
       containers:
-      - name: mongo
-        #image:
+      - name: php-backend
+        image: your-dockerhub-user/matrimony-backend:latest
         ports:
-        - containerPort: 27017
+        - containerPort: 80
