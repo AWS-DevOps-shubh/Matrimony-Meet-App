@@ -2,12 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: php-backend-service
-  namespace: matrimony-app  # Add namespace here
+  namespace: matrimony-app
 spec:
+  type: NodePort  # Expose backend on a fixed port of the node
   selector:
     app: php-backend
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 80
-  type: LoadBalancer
+      port: 80      # Inside the cluster
+      targetPort: 8000  # Backend container port
+      nodePort: 32000   # Expose on EC2 public IP
+
