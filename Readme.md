@@ -1,7 +1,9 @@
 # Matrimony Meet App
 
 ## Overview
-Matrimony Meet is a matchmaking platform with a **Kotlin-based Android application**, a **PHP backend with MongoDB**, and **Kubernetes-based deployment** on AWS.
+Matrimony Meet is a matchmaking application designed to connect people based on preferences, interests, and compatibility. It includes a mobile app (Android) and a PHP-based backend deployed using Docker, Kubernetes, and AWS.
+
+🚀 Deployed using: Jenkins CI/CD | Docker | Kubernetes | Terraform | AWS EC2
 
 ## Tech Stack
 - **Frontend:** Android (Kotlin)
