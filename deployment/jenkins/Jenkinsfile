@@ -1,21 +1,40 @@
 pipeline {
     agent any
+    environment {
+        DOCKER_IMAGE = "yourdockerhub/matrimony-backend:latest"
+        K8S_NAMESPACE = "matrimony-namespace"  // Define namespace
+    }
     stages {
-        stage('Build') {
+        stage('Clone Repository') {
             steps {
-                sh 'docker build -t matrimony-backend .'
+                git 'https://github.com/your-repo/matrimony_meet.git'
             }
         }
-        stage('Push') {
+        stage('Build Docker Image') {
             steps {
-                sh 'docker tag matrimony-backend:latest myrepo/matrimony-backend:latest'
-                sh 'docker push myrepo/matrimony-backend:latest'
+                sh 'docker build -t $DOCKER_IMAGE ./backend'
             }
         }
-        stage('Deploy') {
+        stage('Push Docker Image') {
             steps {
-                sh 'kubectl apply -f deployment/kubernetes/deployment.yaml'
-                sh 'kubectl apply -f deployment/kubernetes/service.yaml'
+                withDockerRegistry([credentialsId: 'docker-hub', url: '']) {
+                    sh 'docker push $DOCKER_IMAGE'
+                }
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f deployment/kubernetes/namespace.yaml'
+                sh 'kubectl apply -f deployment/kubernetes/deployment.yaml -n $K8S_NAMESPACE'
+                sh 'kubectl apply -f deployment/kubernetes/service.yaml -n $K8S_NAMESPACE'
+                sh 'kubectl apply -f deployment/kubernetes/ingress.yaml -n $K8S_NAMESPACE'  // Apply Ingress
+            }
+        }
+        stage('Verify Deployment') {
+            steps {
+                sh 'kubectl get pods -n $K8S_NAMESPACE'
+                sh 'kubectl get svc -n $K8S_NAMESPACE'
+                sh 'kubectl get ingress -n $K8S_NAMESPACE'  // Verify Ingress
             }
         }
     }
